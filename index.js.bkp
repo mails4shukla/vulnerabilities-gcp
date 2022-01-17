@@ -1,0 +1,34 @@
+const express = require('express')
+const mysql  = require('mysql');
+const path = require('path');
+const app = express()
+const port = 8080
+app.get('/sql/:password/:name', (req, res) => {
+console.log(req.params.password);
+	var con = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password:req.params.password,
+  database: "db1"		
+});
+
+con.connect(function(err) {
+  if (err) throw err;
+  console.log("Connected!");
+	console.log("select * from customers where name='"+ req.params.name +"'");
+	con.query("select * from customers where name='"+ req.params.name +"'"  , function (err, result) {
+    if (err) throw err;
+    console.log(result);
+  });
+	res.send("connected and db created");
+});
+})
+
+
+app.get('/', (req, res) => {
+   res.sendFile("/app/index.html");
+})
+
+app.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`)
+})
